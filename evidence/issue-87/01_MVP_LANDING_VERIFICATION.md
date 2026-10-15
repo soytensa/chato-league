@@ -1,4 +1,4 @@
-# Evidencia Técnica y Auditoría de Integridad — Issue #87
+# Evidencia Técnica y Auditoría de Integridad — Issue #87 (Revisión PR #1)
 ## Piensa pe Chato: Landing Pública Base en GitHub Pages para Liga Amateur
 
 - **Proyecto:** `Piensa pe Chato`
@@ -7,82 +7,69 @@
 - **Rama:** `feat/landing-mvp-87`
 - **Fecha:** 15 de octubre de 2026
 - **Entorno Local:** `C:\Users\wesly\.gemini\antigravity\scratch\piensa-pe-chato`
-- **Estado de Entrega:** `PENDING_REVIEW_BEFORE_PUBLISH` (Web implementada y verificada localmente en repositorio privado aislado; pendiente de revisión y autorización para despliegue público en GitHub Pages).
+- **Estado de Entrega:** `PENDING_REVIEW_BEFORE_PUBLISH` (Correcciones P0 y P1 aplicadas en la misma rama; repositorio privado y GitHub Pages sin activar a la espera de autorización).
 
 ---
 
-### 1. Resumen de Cumplimiento de Criterios de Aceptación
+### 1. Resumen de Correcciones Aplicadas (Revisión PR #1)
 
-| Criterio | Estado | Detalle Técnico |
+| Aspecto | Corrección Aplicada | Archivos Modificados |
 |---|---|---|
-| **1. Repositorio independiente propio** | CUMPLIDO | Creado `soytensa/piensa-pe-chato` como repo privado aislado. Cero modificaciones en otros proyectos. |
-| **2. Landing estática responsive sin APIs** | CUMPLIDO | HTML5 semántico + CSS3 moderno (dark theme esports) + Vanilla JS. Sin frameworks pesados, dependencias de pago ni CDNs externos. |
-| **3. Rutas relativas para GitHub Pages** | CUMPLIDO | Todos los recursos (`./styles.css`, `./app.js`, `./favicon.svg`) usan rutas relativas para soportar tanto `/piensa-pe-chato/` como dominio raíz. |
-| **4. Inhouse Series 2026 fiel** | CUMPLIDO | Documentado: 5v5, Captains Mode, plantillas rotativas, balance por capitanes/roles/IA, lobbies en cliente sin configs raras. |
-| **5. Independencia Torneo Diciembre** | CUMPLIDO | Nota destacada clarificando que la liga continua Inhouse es completamente independiente del Torneo de Diciembre. |
-| **6. Sección Valve License (Bilingüe)** | CUMPLIDO | Pestañas accesibles ES/EN con puntos clave de cumplimiento según Valve FAQ (072E-47E8-B513-6E4E). |
-| **7. Enlace Oficial de Discord** | CUMPLIDO | Configurado `https://discord.gg/Ac2WWFJGfQ` en CTA principal y binding dinámico en `app.js`. Sin placeholders ni datos privados. |
-| **8. Marcadores «Próximamente»** | CUMPLIDO | Módulos de Historial, Stats, Pabellón de Héroes y Parser de Replays (.dem) señalados honestamente como futuros sin simular datos falsos. |
-| **9. Favicon/Emblema Original** | CUMPLIDO | Vector SVG original (`favicon.svg`) con escudo geométrico y monograma PC sobrio. Cero logos de terceros con copyright. |
-| **10. Seguridad y Antiapuestas** | CUMPLIDO | Prohibición absoluta de dinero real, apuestas, pasarelas de pago o monetización. Cumplimiento íntegro de ToS de GitHub Pages y Valve. |
-| **11. Guía de GitHub Pages & SEO** | CUMPLIDO | `README.md` exhaustivo con pasos exactos para activar Pages, configurar dominio CNAME y modificar contenidos. |
-| **12. Verificación de Integridad Local** | CUMPLIDO | Suite de pruebas unitarias (`tests/test_landing.py`): 6/6 tests pasando, servidor HTTP local con respuestas 200 en todos los endpoints. |
+| **P0: Región de Servidor y Ámbito** | Eliminadas referencias no confirmadas a «Perú», «Sudamérica» o «servidores fijos». Sustituido por «comunidad hispanohablante e internacional» y «servidores coordinados según partida (España / Europa / internacional)». | `index.html`, `README.md`, `tests/test_landing.py` |
+| **P0: Tratamiento Factual de Acuerdos / Apuestas** | Eliminadas afirmaciones falsas absolutas («100% Gratis / No Apuestas», «prohibición terminante en la comunidad»). El alcance no transaccional se circunscribe estrictamente a la **web estática en GitHub Pages** (sin pasarelas, cobro de entradas ni software de apuestas). Se declara con transparencia que los acuerdos privados entre jugadores discurren fuera de la web y que el organizador informará fielmente del contexto a Valve en la solicitud. | `index.html`, `README.md`, `tests/test_landing.py` |
+| **P0: Estado de Acreditación ante Valve** | Sustituidos rótulos de «Compliance Oficial» o «Aprobación» por «Formato y Solicitud de Liga Amateur». Se incorpora aviso destacado de **Estado en trámite de presentación** indicando que el ticket y la elegibilidad están sujetos a resolución de Valve, y calificando las partidas actuales como «lobbies inhouse preparatorios». | `index.html`, `styles.css`, `README.md`, `tests/test_landing.py` |
+| **P1: Balance y Herramientas** | Clarificado que las herramientas de balance asistido y MMR interno están en fase de diseño/estudio (no operativas en el MVP actual). | `index.html`, `README.md` |
+| **P1: Suite de Pruebas Unitarias** | Ampliada la suite a 8 pruebas automatizadas (`tests/test_landing.py`), incluyendo comprobaciones de ausencia de afirmaciones categóricas falsas, accesibilidad semántica/ARIA y respuestas HTTP 200. | `tests/test_landing.py` |
+| **P1: Evidencia Visual de Navegador** | Verificación real en navegador headless (Microsoft Edge) generando capturas a resolución de escritorio (1280x800) y móvil (375x812). | `evidence/issue-87/render_desktop_1280x800.png`, `evidence/issue-87/render_mobile_375x812.png` |
 
 ---
 
-### 2. Inventario de Archivos Creados
+### 2. Resultados de Validación de la Suite de Pruebas
 
-```text
-piensa-pe-chato/
-├── index.html                  (HTML5 accesible, SEO, OpenGraph, layout responsive y semántico)
-├── styles.css                  (Variables CSS, dark esports theme, accesible WCAG AA, mobile-first)
-├── app.js                      (Configuración centralizada, toggle ES/EN Valve, menú móvil accesible)
-├── favicon.svg                 (Emblema vectorial SVG original para Piensa pe Chato)
-├── README.md                   (Documentación completa, guía GitHub Pages y políticas de uso)
-├── LICENSE                     (Licencia MIT para código abierto comunitario)
-├── .gitignore                  (Exclusiones limpias de temporales de SO y caches)
-├── tests/
-│   └── test_landing.py         (Suite de validación automatizada y prueba de servidor HTTP local)
-└── evidence/
-    └── issue-87/
-        └── 01_MVP_LANDING_VERIFICATION.md (Este reporte de evidencia técnica)
-```
-
----
-
-### 3. Evidencia de Validación de Pruebas Unitarias
-
-Ejecución de la suite automatizada:
+Ejecución de `tests/test_landing.py` (8/8 pruebas superadas, 100% OK):
 ```text
 test_01_required_files_exist (tests.test_landing.TestPiensaPeChatoLanding.test_01_required_files_exist)
 Verifica que todos los archivos requeridos del MVP existen y no están vacíos. ... ok
 test_02_html_structure_and_relative_paths (tests.test_landing.TestPiensaPeChatoLanding.test_02_html_structure_and_relative_paths)
 Verifica que index.html contenga rutas relativas y metadatos SEO / OpenGraph. ... ok
-test_03_inhouse_series_and_valve_requirements (tests.test_landing.TestPiensaPeChatoLanding.test_03_inhouse_series_and_valve_requirements)
-Verifica que el contenido refleje fielmente el formato Inhouse Series y la información para Valve. ... ok
+test_03_inhouse_series_and_valve_application_status (tests.test_landing.TestPiensaPeChatoLanding.test_03_inhouse_series_and_valve_application_status)
+Verifica el formato Inhouse Series, independencia del torneo de diciembre y estado en trámite Valve. ... ok
 test_04_discord_link_integrity (tests.test_landing.TestPiensaPeChatoLanding.test_04_discord_link_integrity)
 Verifica que el enlace oficial de Discord https://discord.gg/Ac2WWFJGfQ esté presente y configurado. ... ok
-test_05_proximamente_and_anti_gambling_compliance (tests.test_landing.TestPiensaPeChatoLanding.test_05_proximamente_and_anti_gambling_compliance)
-Verifica que las funciones futuras estén marcadas como Próximamente y no haya apuestas ni pasarelas. ... ok
-test_06_local_http_server_response (tests.test_landing.TestPiensaPeChatoLanding.test_06_local_http_server_response)
-Inicia un servidor HTTP local y verifica respuestas HTTP 200 de todos los recursos. ... 
-127.0.0.1 - - [15/Oct/2026 14:52:12] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [15/Oct/2026 14:52:12] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [15/Oct/2026 14:52:12] "GET /styles.css HTTP/1.1" 200 -
-127.0.0.1 - - [15/Oct/2026 14:52:12] "GET /app.js HTTP/1.1" 200 -
-127.0.0.1 - - [15/Oct/2026 14:52:12] "GET /favicon.svg HTTP/1.1" 200 -
+test_05_no_unverified_categorical_claims (tests.test_landing.TestPiensaPeChatoLanding.test_05_no_unverified_categorical_claims)
+Verifica la ausencia de afirmaciones categóricas falsas (región fija o negación de acuerdos entre jugadores). ... ok
+test_06_proximamente_modules (tests.test_landing.TestPiensaPeChatoLanding.test_06_proximamente_modules)
+Verifica que las funciones futuras estén honestamente marcadas como Próximamente. ... ok
+test_07_accessibility_and_responsive_css (tests.test_landing.TestPiensaPeChatoLanding.test_07_accessibility_and_responsive_css)
+Verifica etiquetas semánticas, accesibilidad ARIA y consultas de medios responsive en CSS. ... ok
+test_08_local_http_server_response (tests.test_landing.TestPiensaPeChatoLanding.test_08_local_http_server_response)
+Inicia un servidor HTTP local y verifica respuestas HTTP 200 de todos los recursos estáticos. ... 
+127.0.0.1 - - [15/Oct/2026 15:06:17] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:06:17] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:06:17] "GET /styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:06:17] "GET /app.js HTTP/1.1" 200 -
+127.0.0.1 - - [15/Oct/2026 15:06:17] "GET /favicon.svg HTTP/1.1" 200 -
 ok
 
 ----------------------------------------------------------------------
-Ran 6 tests in 0.577s
+Ran 8 tests in 0.580s
 
 OK
 ```
 
 ---
 
-### 4. Estado de Publicación y Próximos Pasos
+### 3. Comprobación de Renderizado Visual en Navegador
 
-- **GitHub Pages Activo:** NO (Conforme a la instrucción estricta de la Issue #87, el repositorio se mantiene privado y sin publicar hasta que el Product Owner y ChatGPT revisen el PR y autoricen la publicación pública).
-- **URL Prevista tras autorización:** `https://soytensa.github.io/piensa-pe-chato/`
-- **Bloqueos o Pendientes:** Cero bloqueos de código. Pendiente únicamente decisión de producto y autorización para hacer público el repositorio y encender GitHub Pages.
+Se ejecutó un servidor HTTP local en puerto 8789 y se invocó el motor de Chromium/Edge en modo headless para capturar el renderizado visual exacto:
+- **Vista Escritorio (1280x800):** Guardada en `evidence/issue-87/render_desktop_1280x800.png`. Barra de navegación expandida, banner hero centrado, panel de estadísticas con 4 columnas y aviso de estado de trámite.
+- **Vista Móvil (375x812):** Guardada en `evidence/issue-87/render_mobile_375x812.png`. Botón hamburguesa accesible (`aria-expanded`), tarjetas apiladas fluidamente en una sola columna y textos ajustados sin desbordamiento horizontal.
+
+---
+
+### 4. Estado de Publicación y Criterios de Seguridad
+
+- **Repositorio:** `soytensa/piensa-pe-chato` (Privado).
+- **GitHub Pages:** NO activado ni publicado.
+- **Pull Request #1:** https://github.com/soytensa/piensa-pe-chato/pull/1 actualizado con las correcciones.
+- **Merge a main:** NO realizado (esperando revisión y aprobación explícita).

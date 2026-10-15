@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
 Test Suite de Integración y Validación para Piensa pe Chato — Landing MVP (Issue #87)
-Verifica integridad de archivos, sintaxis, rutas relativas, compliance y respuesta HTTP local.
+Actualizada según revisión de PR #1: valida archivos, rutas relativas, ausencia de afirmaciones
+categóricas falsas (región fija/cero apuestas comunitarias), estado pendiente Valve y HTTP local.
 """
 
 import http.server
 import os
-import re
 import socketserver
 import threading
 import time
@@ -50,12 +50,12 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertIn('src="./app.js"', content)
         self.assertIn('href="./favicon.svg"', content)
 
-        # No debe contener rutas absolutas a localhost o rutas rotas
+        # No debe contener rutas absolutas a localhost o rutas rotas de primer nivel
         self.assertNotIn('href="/styles.css"', content)
         self.assertNotIn('src="/app.js"', content)
 
-    def test_03_inhouse_series_and_valve_requirements(self):
-        """Verifica que el contenido refleje fielmente el formato Inhouse Series y la información para Valve."""
+    def test_03_inhouse_series_and_valve_application_status(self):
+        """Verifica el formato Inhouse Series, independencia del torneo de diciembre y estado en trámite Valve."""
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -64,64 +64,92 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertIn("Piensa pe Chato", content)
         self.assertIn("Inhouse Series 2026", content)
 
-        # Pilares del formato
+        # Pilares del formato inhouse
         self.assertIn("Captains Mode", content)
         self.assertIn("5v5", content)
-        self.assertIn("Plantillas", content)
-        self.assertIn("Torneo de Diciembre", content)  # Debe clarificar la independencia
+        self.assertIn("Plantillas Dinámicas", content)
+        self.assertIn("Torneo de Diciembre", content)  # Independencia operativa documentada
 
-        # Sección Valve bilingüe
+        # Sección Valve: debe reflejar estado en trámite / pendiente de aprobación
         self.assertIn("valve-compliance", content)
         self.assertIn("valve-lang-es", content)
         self.assertIn("valve-lang-en", content)
-        self.assertIn("Non-Commercial Nature", content)
+        self.assertIn("En trámite de presentación", content)
+        self.assertIn("pending review", content.lower())
         self.assertIn("072E-47E8-B513-6E4E", content)  # Enlace FAQ Valve
 
     def test_04_discord_link_integrity(self):
         """Verifica que el enlace oficial de Discord https://discord.gg/Ac2WWFJGfQ esté presente y configurado."""
         official_discord = "https://discord.gg/Ac2WWFJGfQ"
 
-        # En index.html
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             html_content = f.read()
         self.assertIn(official_discord, html_content)
 
-        # En app.js
         js_path = os.path.join(ROOT_DIR, "app.js")
         with open(js_path, "r", encoding="utf-8") as f:
             js_content = f.read()
         self.assertIn(official_discord, js_content)
 
-    def test_05_proximamente_and_anti_gambling_compliance(self):
-        """Verifica que las funciones futuras estén marcadas como Próximamente y no haya apuestas ni pasarelas."""
+    def test_05_no_unverified_categorical_claims(self):
+        """Verifica la ausencia de afirmaciones categóricas falsas (región fija o negación de acuerdos entre jugadores)."""
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
 
-        # Marcadores transparentes
+        # No debe afirmar una región geográfica exclusiva no confirmada
+        self.assertNotIn("Perú", content)
+        self.assertNotIn("Sudamérica", content)
+
+        # No debe hacer declaraciones falsas absolutas sobre ausencia de dinero/apuestas en la comunidad
+        content_lower = content.lower()
+        self.assertNotIn("cero cuotas / no apuestas", content_lower)
+        self.assertNotIn("prohibición terminante", content_lower)
+        self.assertNotIn("zero real-money gambling", content_lower)
+
+        # La limitación debe atribuirse certeramente a la web y su hosting
+        self.assertIn("web estática", content_lower)
+        self.assertIn("sin pasarelas", content_lower)
+
+    def test_06_proximamente_modules(self):
+        """Verifica que las funciones futuras estén honestamente marcadas como Próximamente."""
+        html_path = os.path.join(ROOT_DIR, "index.html")
+        with open(html_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
         self.assertIn("Próximamente", content)
         self.assertIn("Historial de Partidas", content)
-        self.assertIn("Estadísticas y Rankings", content)
+        self.assertIn("Estadísticas Comunitarias", content)
         self.assertIn("Pabellón de Héroes", content)
 
-        # Reglas de uso aceptable: no apuestas ni transacciones
-        forbidden_commercial_terms = [
-            "apostar dinero",
-            "casino",
-            "cuota de pago",
-            "paypal checkout",
-            "stripe checkout",
-            "apuestas deportivas"
-        ]
-        for term in forbidden_commercial_terms:
-            self.assertNotIn(term, content.lower())
+    def test_07_accessibility_and_responsive_css(self):
+        """Verifica etiquetas semánticas, accesibilidad ARIA y consultas de medios responsive en CSS."""
+        html_path = os.path.join(ROOT_DIR, "index.html")
+        with open(html_path, "r", encoding="utf-8") as f:
+            html = f.read()
 
-    def test_06_local_http_server_response(self):
-        """Inicia un servidor HTTP local y verifica respuestas HTTP 200 de todos los recursos."""
-        port = 8787
+        self.assertIn("<header", html)
+        self.assertIn("<nav", html)
+        self.assertIn("<main", html)
+        self.assertIn("<section", html)
+        self.assertIn("<footer", html)
+        self.assertIn('role="tablist"', html)
+        self.assertIn('role="tab"', html)
+        self.assertIn('aria-selected', html)
+
+        css_path = os.path.join(ROOT_DIR, "styles.css")
+        with open(css_path, "r", encoding="utf-8") as f:
+            css = f.read()
+
+        self.assertIn("@media (max-width: 868px)", css)
+        self.assertIn(":focus-visible", css)
+        self.assertIn("color-scheme: dark", css)
+
+    def test_08_local_http_server_response(self):
+        """Inicia un servidor HTTP local y verifica respuestas HTTP 200 de todos los recursos estáticos."""
+        port = 8788
         handler = http.server.SimpleHTTPRequestHandler
-        # Usar un servidor multihilo o simple en daemon
         class QuietServer(socketserver.TCPServer):
             allow_reuse_address = True
 

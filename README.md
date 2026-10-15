@@ -1,17 +1,17 @@
 # Piensa pe Chato — Dota 2 Inhouse Series (Landing Web Base)
 
-Repositorio oficial de la landing pública para la comunidad amateur de Dota 2 **«Piensa pe Chato»**, diseñada como portal de referencia y acreditación para la solicitud de licencia de liga amateur **«Piensa pe Chato — Inhouse Series 2026»** ante Valve Corporation.
+Repositorio de la landing pública para la comunidad amateur de Dota 2 **«Piensa pe Chato»**, diseñada como portal base de información y referencia para la tramitación de la solicitud de licencia de liga amateur **«Piensa pe Chato — Inhouse Series 2026»** ante Valve Corporation.
 
 ---
 
 ## 🎯 Objetivo y Alcance del MVP
 
-- **Portal Base**: Web estática, responsive, accesible y ultraligera (HTML5 semántico, CSS3 moderno, Vanilla JavaScript) sin frameworks pesados, dependencias externas ni APIs de pago.
-- **Formato Inhouse Fiel**: Documentación clara de partidas 5v5 en Captains Mode, plantillas rotativas, balance por capitanes/roles/IA, lobbies en cliente y cero datos ficticios.
+- **Portal Base**: Web estática, responsive y accesible (HTML5 semántico, CSS3 moderno, Vanilla JavaScript) sin frameworks pesados, dependencias externas ni APIs de pago.
+- **Formato Inhouse Fiel**: Documentación clara de partidas 5v5 en Captains Mode, plantillas rotativas, balance por capitanes y roles, lobbies en cliente oficial y cero datos simulados.
 - **Independencia Operativa**: Separación explícita de la liga continua Inhouse frente al Torneo de Diciembre (que cuenta con su propio formato).
-- **Cumplimiento Valve (Amateur League)**: Sección bilingüe (Español / Inglés) estructurada según los requerimientos de Valve para licencias de torneos amateur ([Valve Tournament FAQ](https://help.steampowered.com/en/faqs/view/072E-47E8-B513-6E4E)).
+- **Información de Solicitud Valve (Amateur League)**: Sección bilingüe (Español / Inglés) estructurada según las pautas de Valve para licencias de torneos amateur ([Valve Tournament FAQ](https://help.steampowered.com/en/faqs/view/072E-47E8-B513-6E4E)), dejando claro que el ticket y la aprobación están en trámite.
 - **Comunidad & Discord**: Enlace oficial verificado a Discord (`https://discord.gg/Ac2WWFJGfQ`) con protección de datos y sin filtración de información privada.
-- **Seguridad y Uso Aceptable**: Tolerancia cero a apuestas, dinero real, pasarelas de pago o monetización comercial.
+- **Alcance No Transaccional de la Web**: Esta web estática no procesa pagos, venta de entradas ni gestión de apuestas. Los acuerdos privados entre participantes discurren fuera de la plataforma web.
 
 ---
 
@@ -40,7 +40,7 @@ Para publicar la web de forma gratuita en GitHub Pages una vez autorizada la ent
 
 ## 🌐 Configuración de Dominio Personalizado (Opcional)
 
-Si posteriormente se desea vincular un dominio propio (por ejemplo, `piensapechato.pe` o `piensapechato.com`):
+Si posteriormente se desea vincular un dominio propio (por ejemplo, `piensapechato.com` o similar):
 
 1. En **Settings** > **Pages** > **Custom domain**, escribir el dominio deseado y hacer clic en **Save**.
 2. GitHub creará automáticamente un archivo `CNAME` en la raíz del repositorio.
@@ -62,20 +62,20 @@ Si posteriormente se desea vincular un dominio propio (por ejemplo, `piensapecha
   - Actualizar los atributos `href` de clase `.js-discord-cta` en `index.html`.
 - **Modificar Reglas o Formato Inhouse**:
   - Editar la sección `<section id="inhouse-series">` en `index.html`.
-- **Actualizar Texto de Compliance Valve**:
+- **Actualizar Información de Solicitud Valve**:
   - Editar los paneles `#valve-lang-es` y `#valve-lang-en` dentro de `index.html`.
 - **Estilos Visuales**:
   - Editar `styles.css`. Las variables principales (colores, fuentes, espaciados) se encuentran al inicio en `:root`.
 
 ---
 
-## 🛡️ Políticas de Seguridad y Uso Aceptable
+## 🛡️ Políticas de Seguridad y Uso Aceptable de la Web
 
-1. **Prohibición de Apuestas y Transacciones Monetarias**:
-   - Este sitio **no** incluye ni incluirá pasarelas de pago, apuestas en vivo, compraventa de ítems ni apuestas deportivas.
-   - Cualquier iniciativa que requiera cobros monetarios o manejo financiero queda estrictamente excluida de este repositorio.
+1. **Naturaleza Estática e Informativa**:
+   - Este sitio web alojado en GitHub Pages no incluye ni incluirá pasarelas de pago, cobro de entradas, venta de ítems ni módulos de apuestas deportivas.
+   - Es una herramienta puramente informativa y comunitaria. Cualquier interacción o acuerdo privado entre jugadores se efectúa fuera de la web y queda a criterio de evaluación de Valve en la solicitud.
 2. **Privacidad de la Comunidad**:
-   - No se publican nombres reales, números telefónicos, direcciones ni claves privadas de jugadores o administradores.
+   - No se publican nombres reales, números telefónicos, domicilios ni claves privadas de jugadores o administradores.
 3. **Propiedad Intelectual y Marcas**:
    - Dota 2 y Valve son marcas registradas de Valve Corporation. Este portal es una iniciativa comunitaria amateur.
    - El favicon y diseño gráfico son de autoría original sin reutilizar logotipos de terceros con derechos reservados.
