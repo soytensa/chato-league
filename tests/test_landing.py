@@ -148,6 +148,8 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertIn("@media (max-width: 868px)", css)
         self.assertIn(":focus-visible", css)
         self.assertIn("color-scheme: dark", css)
+        self.assertIn(".nav-links a.mobile-discord-cta", css)
+        self.assertIn("#0f141c", css)
 
     def test_08_local_http_server_response(self):
         """Inicia un servidor HTTP local y verifica respuestas HTTP 200 de todos los recursos estáticos."""

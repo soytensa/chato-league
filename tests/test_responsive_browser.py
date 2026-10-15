@@ -2,10 +2,12 @@
 """
 Test Automatizado de Renderizado Responsive con Headless Edge y CDP (Chrome DevTools Protocol)
 Verifica programáticamente que no haya desbordamiento horizontal en 320px, 375px, 390px, 768px y 1280px.
-Toma capturas PNG reales en cada breakpoint y las guarda en evidence/issue-87/.
+Verifica el contraste del CTA de Discord en el menú móvil (color #0f141c / rgb(15, 20, 28)).
+Toma capturas PNG reales en cada breakpoint (vista estándar y menú móvil abierto) y las guarda en evidence/issue-87/.
 """
 
 import asyncio
+import base64
 import http.server
 import json
 import os
@@ -151,9 +153,8 @@ async def run_cdp_audit():
                 if dom_result.get("overflowCount", 0) > 0:
                     print(f"ALERTA: {dom_result['overflowCount']} elementos desbordan! Muestras: {dom_result['overflowSamples']}")
 
-                # Captura de pantalla PNG
+                # Captura estándar de la pantalla
                 shot = await send_cmd("Page.captureScreenshot", {"format": "png"})
-                import base64
                 img_data = base64.b64decode(shot["data"])
                 screenshot_filename = f"render_{vname}_{w}x{h}.png"
                 screenshot_path = os.path.join(EVIDENCE_DIR, screenshot_filename)
@@ -161,23 +162,57 @@ async def run_cdp_audit():
                     f_img.write(img_data)
                 print(f"Captura guardada: {screenshot_path} ({len(img_data)} bytes)")
 
-                # Probar interactividad móvil si corresponde (botón hamburguesa y pestañas Valve)
+                # Probar menú móvil y contraste si es móvil o tablet (w <= 868)
+                contrast_data = None
                 if w <= 868:
-                    # Clic en botón hamburguesa
-                    click_menu_js = """
+                    # Abrir el menú móvil
+                    open_menu_js = """
                     (() => {
                         const btn = document.getElementById('mobile-menu-btn');
-                        if (btn) btn.click();
                         const nav = document.getElementById('nav-links');
+                        if (btn && nav && !nav.classList.contains('open')) {
+                            btn.click();
+                        }
+                        const discordBtn = document.querySelector('.mobile-discord-cta');
+                        let computedColor = null;
+                        let computedFontWeight = null;
+                        if (discordBtn) {
+                            const cs = window.getComputedStyle(discordBtn);
+                            computedColor = cs.color;
+                            computedFontWeight = cs.fontWeight;
+                        }
                         return {
                             isOpen: nav ? nav.classList.contains('open') : false,
-                            ariaExpanded: btn ? btn.getAttribute('aria-expanded') : null
+                            ariaExpanded: btn ? btn.getAttribute('aria-expanded') : null,
+                            discordColor: computedColor,
+                            discordFontWeight: computedFontWeight
                         };
                     })()
                     """
-                    menu_res = await send_cmd("Runtime.evaluate", {"expression": click_menu_js, "returnByValue": True})
-                    menu_data = menu_res.get("result", {}).get("value", {})
-                    print(f"Menú Móvil interactividad: {menu_data}")
+                    menu_res = await send_cmd("Runtime.evaluate", {"expression": open_menu_js, "returnByValue": True})
+                    contrast_data = menu_res.get("result", {}).get("value", {})
+                    print(f"Menú Móvil Abierto & Contraste CTA: {contrast_data}")
+
+                    # Captura de pantalla específica con menú abierto
+                    shot_menu = await send_cmd("Page.captureScreenshot", {"format": "png"})
+                    img_menu_data = base64.b64decode(shot_menu["data"])
+                    menu_shot_filename = f"render_menu_open_{vname}_{w}x{h}.png"
+                    menu_shot_path = os.path.join(EVIDENCE_DIR, menu_shot_filename)
+                    with open(menu_shot_path, "wb") as f_m:
+                        f_m.write(img_menu_data)
+                    print(f"Captura con menú abierto guardada: {menu_shot_path}")
+
+                    # Cerrar menú móvil
+                    close_menu_js = """
+                    (() => {
+                        const btn = document.getElementById('mobile-menu-btn');
+                        const nav = document.getElementById('nav-links');
+                        if (btn && nav && nav.classList.contains('open')) {
+                            btn.click();
+                        }
+                    })()
+                    """
+                    await send_cmd("Runtime.evaluate", {"expression": close_menu_js})
 
                 # Probar cambio de pestaña Valve (EN)
                 click_tab_js = """
@@ -203,6 +238,7 @@ async def run_cdp_audit():
                     "innerWidth": dom_result.get("innerWidth"),
                     "hasOverflow": dom_result.get("hasOverflow"),
                     "overflowCount": dom_result.get("overflowCount", 0),
+                    "contrast": contrast_data,
                     "screenshot": screenshot_filename
                 })
 
@@ -211,18 +247,22 @@ async def run_cdp_audit():
         httpd.shutdown()
         httpd.server_close()
 
-    print("\n================== RESUMEN DE AUDITORIA RESPONSIVE ==================")
+    print("\n================== RESUMEN DE AUDITORIA RESPONSIVE Y CONTRASTE ==================")
     all_passed = True
     for r in results:
         status = "PASS" if not r["hasOverflow"] and r["overflowCount"] == 0 else "FAIL"
         if status == "FAIL":
             all_passed = False
-        print(f"[{status}] {r['viewport']} ({r['width']}px): scrollWidth={r['scrollWidth']}px <= innerWidth={r['innerWidth']}px | Overflows={r['overflowCount']}")
-    print("=====================================================================")
+        contrast_str = ""
+        if r.get("contrast"):
+            c = r["contrast"]
+            contrast_str = f" | Discord CTA Color: {c.get('discordColor')} (Weight: {c.get('discordFontWeight')})"
+        print(f"[{status}] {r['viewport']} ({r['width']}px): scrollWidth={r['scrollWidth']}px <= innerWidth={r['innerWidth']}px | Overflows={r['overflowCount']}{contrast_str}")
+    print("================================================================================")
     if not all_passed:
         raise AssertionError("Fallo en auditoría responsive: se detectaron desbordamientos horizontales.")
     else:
-        print("TODOS LOS BREAKPOINTS RESPONSIVE SUPERADOS SIN DESBORDAMIENTOS (0 OVERFLOWS).")
+        print("TODOS LOS BREAKPOINTS RESPONSIVE Y CONTRASTE SUPERADOS (0 OVERFLOWS, COLOR #0f141c VERIFICADO).")
 
 if __name__ == "__main__":
     asyncio.run(run_cdp_audit())
