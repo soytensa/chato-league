@@ -24,58 +24,73 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileMenuBtn = document.getElementById("mobile-menu-btn");
   const navLinks = document.getElementById("nav-links");
 
+  const closeMobileMenu = () => {
+    if (navLinks && navLinks.classList.contains("open")) {
+      navLinks.classList.remove("open");
+      if (mobileMenuBtn) {
+        mobileMenuBtn.setAttribute("aria-expanded", "false");
+      }
+    }
+  };
+
   if (mobileMenuBtn && navLinks) {
     mobileMenuBtn.addEventListener("click", () => {
       const isOpen = navLinks.classList.toggle("open");
       mobileMenuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
-    // Cerrar menú móvil al hacer clic en un enlace
+    // Cerrar menú móvil al hacer clic en enlaces de navegación
     navLinks.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => {
-        navLinks.classList.remove("open");
-        mobileMenuBtn.setAttribute("aria-expanded", "false");
+        closeMobileMenu();
       });
     });
   }
 
-  // 3. Pestañas de cumplimiento Valve (ES / EN)
+  // 3. Pestañas de información Valve (ES / EN)
   const tabButtons = document.querySelectorAll(".tab-btn");
   const tabContents = document.querySelectorAll(".tab-content");
+
+  const switchValveTab = (targetLang) => {
+    tabButtons.forEach(b => {
+      b.classList.remove("active");
+      b.setAttribute("aria-selected", "false");
+    });
+    tabContents.forEach(c => c.classList.remove("active"));
+
+    const activeBtn = document.querySelector(`.tab-btn[data-tab="${targetLang}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add("active");
+      activeBtn.setAttribute("aria-selected", "true");
+    }
+
+    const activeContent = document.getElementById(`valve-lang-${targetLang}`);
+    if (activeContent) {
+      activeContent.classList.add("active");
+    }
+  };
 
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       const targetLang = btn.getAttribute("data-tab");
-
-      tabButtons.forEach(b => {
-        b.classList.remove("active");
-        b.setAttribute("aria-selected", "false");
-      });
-      tabContents.forEach(c => c.classList.remove("active"));
-
-      btn.classList.add("active");
-      btn.setAttribute("aria-selected", "true");
-
-      const activeContent = document.getElementById(`valve-lang-${targetLang}`);
-      if (activeContent) {
-        activeContent.classList.add("active");
-      }
+      switchValveTab(targetLang);
     });
   });
 
-  // 4. Selector de idioma rápido en el header
-  const quickLangBtn = document.getElementById("header-lang-toggle");
-  if (quickLangBtn) {
-    quickLangBtn.addEventListener("click", () => {
+  // 4. Selectores de acceso directo a la información de Valve (desktop y móvil)
+  const setupValveQuickBtn = (btnId) => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      closeMobileMenu();
       const valveSection = document.getElementById("valve-compliance");
       if (valveSection) {
         valveSection.scrollIntoView({ behavior: "smooth" });
-        // Alternar a la pestaña en inglés para facilidad de revisión
-        const enTabBtn = document.querySelector('.tab-btn[data-tab="en"]');
-        if (enTabBtn) {
-          enTabBtn.click();
-        }
+        switchValveTab("en");
       }
     });
-  }
+  };
+
+  setupValveQuickBtn("header-lang-toggle");
+  setupValveQuickBtn("mobile-lang-toggle");
 });

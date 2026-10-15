@@ -70,12 +70,12 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertIn("Plantillas Dinámicas", content)
         self.assertIn("Torneo de Diciembre", content)  # Independencia operativa documentada
 
-        # Sección Valve: debe reflejar estado en trámite / pendiente de aprobación
+        # Sección Valve: debe reflejar estado en preparación / pendiente de envío y evaluación por Valve
         self.assertIn("valve-compliance", content)
         self.assertIn("valve-lang-es", content)
         self.assertIn("valve-lang-en", content)
-        self.assertIn("En trámite de presentación", content)
-        self.assertIn("pending review", content.lower())
+        self.assertIn("Solicitud en preparación", content)
+        self.assertIn("Pending submission and evaluation by Valve", content)
         self.assertIn("072E-47E8-B513-6E4E", content)  # Enlace FAQ Valve
 
     def test_04_discord_link_integrity(self):
@@ -93,7 +93,7 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertIn(official_discord, js_content)
 
     def test_05_no_unverified_categorical_claims(self):
-        """Verifica la ausencia de afirmaciones categóricas falsas (región fija o negación de acuerdos entre jugadores)."""
+        """Verifica la ausencia de afirmaciones categóricas falsas (región fija, negación de acuerdos, o actas no probadas)."""
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -101,6 +101,9 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         # No debe afirmar una región geográfica exclusiva no confirmada
         self.assertNotIn("Perú", content)
         self.assertNotIn("Sudamérica", content)
+
+        # No debe afirmar procedimientos no comprobados como actas en Discord
+        self.assertNotIn("actas en discord", content.lower())
 
         # No debe hacer declaraciones falsas absolutas sobre ausencia de dinero/apuestas en la comunidad
         content_lower = content.lower()
