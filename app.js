@@ -4,11 +4,12 @@
  */
 
 const CONFIG = {
-  // Enlace oficial de invitación Discord proporcionado para el MVP (Issue #87)
+  // Enlace oficial de invitación Discord (comunidad Piensa pe Chato)
   discordInviteUrl: "https://discord.gg/Ac2WWFJGfQ",
-  leagueName: "Piensa pe Chato — Inhouse Series 2026",
-  season: "2026",
-  githubRepo: "https://github.com/soytensa/piensa-pe-chato"
+  leagueName: "Chato League - Season Zero",
+  edition: "Season Zero",
+  dates: "1 a 30 de noviembre de 2026",
+  githubRepo: "https://github.com/soytensa/chato-league"
 };
 
 document.addEventListener("DOMContentLoaded", () => {
