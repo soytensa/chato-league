@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141c2b" />
+      <stop offset="100%" stop-color="#090d15" />
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#06b6d4" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background Shield -->
+  <path d="M64 8 L114 26 C114 74 64 116 64 120 C64 116 14 74 14 26 Z" 
+        fill="url(#shieldGrad)" 
+        stroke="url(#borderGrad)" 
+        stroke-width="5" 
+        stroke-linejoin="round"
+        filter="url(#glow)" />
+
+  <!-- Inner Geometric Accent Lines -->
+  <path d="M64 20 L98 33 C98 70 64 102 64 106 C64 102 30 70 30 33 Z" 
+        fill="none" 
+        stroke="rgba(255,255,255,0.08)" 
+        stroke-width="2" />
+
+  <!-- Monogram PC (Piensa pe Chato) -->
+  <g font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="44" fill="url(#textGrad)" text-anchor="middle" dominant-baseline="central">
+    <text x="50" y="62" letter-spacing="-2">P</text>
+    <text x="78" y="68" fill="#f59e0b" font-size="38" letter-spacing="-2">C</text>
+  </g>
+
+  <!-- Radiant / Inhouse Dot Motif -->
+  <circle cx="64" cy="98" r="4" fill="#06b6d4" />
+</svg>
