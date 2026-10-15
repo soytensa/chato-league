@@ -1,0 +1,15 @@
+# Entorno local y SO
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores y herramientas
+.vscode/
+.idea/
+*.swp
+*.bak
+
+# Temporales y caches
+__pycache__/
+*.pyc
+.pytest_cache/
