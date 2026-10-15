@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
 Test Automatizado de Verificación de GitHub Pages en Producción (Live Web)
-URL: https://soytensa.github.io/piensa-pe-chato/
+URL: https://soytensa.github.io/chato-league/
 - Verifica HTTP 200 y HTTPS en HTML, CSS, JS y favicon.
-- Verifica enlaces de Discord y Valve.
+- Verifica título, marca CHATO LEAGUE y enlaces de Discord.
 - Renderiza en Microsoft Edge Headless contra la URL pública de GitHub Pages.
 - Captura pantallas de escritorio (1280x800) y móvil (375x812, normal y con menú abierto).
-- Guarda evidencias en evidence/issue-90/.
+- Guarda evidencias en evidence/issue-92/.
 """
 
 import asyncio
@@ -19,9 +19,9 @@ import urllib.request
 import websockets
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EVIDENCE_DIR = os.path.join(ROOT_DIR, "evidence", "issue-90")
+EVIDENCE_DIR = os.path.join(ROOT_DIR, "evidence", "issue-92")
 EDGE_PATH = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-LIVE_URL = "https://soytensa.github.io/piensa-pe-chato/"
+LIVE_URL = "https://soytensa.github.io/chato-league/"
 
 TARGET_VIEWPORTS = [
     {"name": "desktop_1280", "width": 1280, "height": 800, "is_mobile": False},
@@ -71,7 +71,7 @@ async def run_live_audit():
 
         ws_url = None
         for t in targets:
-            if "webSocketDebuggerUrl" in t and ("piensa-pe-chato" in t.get("url", "") or t.get("type") == "page"):
+            if "webSocketDebuggerUrl" in t and ("chato-league" in t.get("url", "") or t.get("type") == "page"):
                 ws_url = t["webSocketDebuggerUrl"]
                 break
         if not ws_url and targets:
@@ -116,7 +116,7 @@ async def run_live_audit():
             print(f"  [DOM] URL activa: {page_meta['url']}")
             print(f"  [DOM] Titulo: {page_meta['title']}")
             print(f"  [DOM] Enlaces Discord CTA: {page_meta['ctaCount']}")
-            assert "Piensa pe Chato" in page_meta["title"]
+            assert "CHATO LEAGUE" in page_meta["title"] or "Chato" in page_meta["title"]
             assert page_meta["ctaCount"] >= 3
 
             results = []

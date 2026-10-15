@@ -134,6 +134,20 @@ img, svg {
   color: var(--accent-amber);
 }
 
+.brand-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(240, 178, 50, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(240, 178, 50, 0.4);
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+  vertical-align: middle;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -980,6 +994,10 @@ section {
   .brand-logo {
     width: 1.85rem;
     height: 1.85rem;
+  }
+
+  .brand-badge {
+    display: none;
   }
 
   .hero-title {

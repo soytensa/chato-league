@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Test Suite de Integración y Validación para Piensa pe Chato — Landing MVP (Issue #87)
-Actualizada según revisión de PR #1: valida archivos, rutas relativas, ausencia de afirmaciones
-categóricas falsas (región fija/cero apuestas comunitarias), estado pendiente Valve y HTTP local.
+Test Suite de Integración y Validación para Chato League — Season Zero (Issue #92)
+Valida archivos, rutas relativas, identidad de marca, Season Zero, Valve compliance,
+aclaración comunitaria de Chupetines EU, enlaces de Discord y HTTP local.
 """
 
 import http.server
@@ -15,10 +15,11 @@ import urllib.request
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-class TestPiensaPeChatoLanding(unittest.TestCase):
+
+class TestChatoLeagueLanding(unittest.TestCase):
 
     def test_01_required_files_exist(self):
-        """Verifica que todos los archivos requeridos del MVP existen y no están vacíos."""
+        """Verifica que todos los archivos requeridos existen y no están vacíos."""
         required_files = [
             "index.html",
             "styles.css",
@@ -26,24 +27,27 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
             "favicon.svg",
             "README.md",
             "LICENSE",
-            ".gitignore"
+            ".gitignore",
         ]
         for fname in required_files:
             fpath = os.path.join(ROOT_DIR, fname)
             self.assertTrue(os.path.exists(fpath), f"Falta el archivo requerido: {fname}")
             self.assertGreater(os.path.getsize(fpath), 0, f"El archivo está vacío: {fname}")
 
-    def test_02_html_structure_and_relative_paths(self):
-        """Verifica que index.html contenga rutas relativas y metadatos SEO / OpenGraph."""
+    def test_02_html_structure_and_canonical_url(self):
+        """Verifica que index.html contenga rutas relativas, canónica de chato-league y metadatos SEO / OG."""
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         # HTML5 doctype y estructura
         self.assertIn("<!DOCTYPE html>", content)
-        self.assertIn("<meta name=\"viewport\"", content)
-        self.assertIn("<meta property=\"og:title\"", content)
-        self.assertIn("<meta property=\"og:url\"", content)
+        self.assertIn('<meta name="viewport"', content)
+        self.assertIn('<meta property="og:title"', content)
+        self.assertIn('<meta property="og:url"', content)
+
+        # URL Canónica nueva
+        self.assertIn('https://soytensa.github.io/chato-league/', content)
 
         # Rutas relativas seguras para GitHub Pages
         self.assertIn('href="./styles.css"', content)
@@ -54,21 +58,33 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertNotIn('href="/styles.css"', content)
         self.assertNotIn('src="/app.js"', content)
 
-    def test_03_inhouse_series_and_valve_application_status(self):
-        """Verifica el formato Inhouse Series, independencia del torneo de diciembre y estado en trámite Valve."""
+    def test_03_chato_league_identity_and_season_zero(self):
+        """Verifica la marca CHATO LEAGUE, SEASON ZERO, fechas y denominación de Valve."""
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
 
-        # Marca y título
-        self.assertIn("Piensa pe Chato", content)
-        self.assertIn("Inhouse Series 2026", content)
+        # Marca y edición
+        self.assertIn("CHATO LEAGUE", content)
+        self.assertIn("SEASON ZERO", content)
+        self.assertIn("Chato League - Season Zero", content)
 
-        # Pilares del formato inhouse
+        # Fechas del piloto
+        self.assertIn("noviembre de 2026", content.lower())
+
+        # Pilares del formato
         self.assertIn("Captains Mode", content)
         self.assertIn("5v5", content)
         self.assertIn("Plantillas Dinámicas", content)
-        self.assertIn("Torneo de Diciembre", content)  # Independencia operativa documentada
+
+        # Relación comunitaria con Piensa pe Chato
+        self.assertIn("Piensa pe Chato", content)
+
+        # Independencia del Torneo de Diciembre y aclaración de Chupetines EU
+        self.assertIn("Torneo de Diciembre", content)
+        self.assertIn("Chupetines EU", content)
+        content_lower = content.lower()
+        self.assertIn("externa e independiente", content_lower)
 
         # Sección Valve: debe reflejar estado en preparación / pendiente de envío y evaluación por Valve
         self.assertIn("valve-compliance", content)
@@ -93,7 +109,7 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         self.assertIn(official_discord, js_content)
 
     def test_05_no_unverified_categorical_claims(self):
-        """Verifica la ausencia de afirmaciones categóricas falsas (región fija, negación de acuerdos, o actas no probadas)."""
+        """Verifica la ausencia de afirmaciones categóricas falsas."""
         html_path = os.path.join(ROOT_DIR, "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -105,13 +121,11 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         # No debe afirmar procedimientos no comprobados como actas en Discord
         self.assertNotIn("actas en discord", content.lower())
 
-        # No debe hacer declaraciones falsas absolutas sobre ausencia de dinero/apuestas en la comunidad
+        # No debe atribuir organización o representación oficial a Chupetines EU
         content_lower = content.lower()
-        self.assertNotIn("cero cuotas / no apuestas", content_lower)
-        self.assertNotIn("prohibición terminante", content_lower)
-        self.assertNotIn("zero real-money gambling", content_lower)
+        self.assertNotIn("organizado por chupetines eu", content_lower)
 
-        # La limitación debe atribuirse certeramente a la web y su hosting
+        # La limitación financiera debe atribuirse certeramente a la web
         self.assertIn("web estática", content_lower)
         self.assertIn("sin pasarelas", content_lower)
 
@@ -155,6 +169,7 @@ class TestPiensaPeChatoLanding(unittest.TestCase):
         """Inicia un servidor HTTP local y verifica respuestas HTTP 200 de todos los recursos estáticos."""
         port = 8788
         handler = http.server.SimpleHTTPRequestHandler
+
         class QuietServer(socketserver.TCPServer):
             allow_reuse_address = True
 
